@@ -8,16 +8,16 @@ import { prisma } from '@repo/database-common/prismaClient';
 export const signup = async(req:Request, res:Response)=>{
     try {
         
-        const data = CreateUserSchema.safeParse(req.body);
+        const parsedData = CreateUserSchema.safeParse(req.body);
 
-        if(!data.success){
+        if(!parsedData.success){
             res.status(400).json({message:"Everyfield is required"});
             return;
         }
 
         const user = await prisma.user.findUnique({
             where : {
-                email : req.body.email,
+                email : parsedData.data.email,
             }
         })
 
@@ -52,16 +52,16 @@ export const signup = async(req:Request, res:Response)=>{
 export const signin = async(req:Request, res:Response)=>{
     try {
 
-        const data = SigninSchema.safeParse(req.body);
-
-        if(!data.success){
+        const parsedData = SigninSchema.safeParse(req.body);
+        
+        if(!parsedData.success){
             res.status(400).json({message:"Everyfield is required"});
             return;
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findFirst({
             where : {
-                email : req.body.eamil,
+                email : parsedData.data.email,
             }
         });
 
@@ -73,7 +73,7 @@ export const signin = async(req:Request, res:Response)=>{
             return;
         }
 
-        const isPasswordMatched = bcrypt.compare(req.body.password, user.password);
+        const isPasswordMatched = bcrypt.compare(parsedData.data.password, user.password);
 
         if(!isPasswordMatched){
             res.status(403).json({
@@ -82,7 +82,7 @@ export const signin = async(req:Request, res:Response)=>{
             });
         }
 
-        const token = jwt.sign({name : user.name}, JWT_SECRET);
+        const token = jwt.sign({userId : user.id}, JWT_SECRET);
 
         res.status(200).json({
             message : "Signin succesfull",

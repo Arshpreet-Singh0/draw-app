@@ -7,13 +7,13 @@ export const isAuthenticated = async(req:Request, res:Response, next:NextFunctio
         const token = req.headers["authorization"] ?? "";
 
         const decode = jwt.verify(token , JWT_SECRET) as JwtPayload;
-
+        
         if(!decode){
             res.status(401).json({message:"Invalid token"});
             return;
         }
         //@ts-ignore
-        req.id = decode.name;
+        req.userId = decode.userId;
 
         next();
 
