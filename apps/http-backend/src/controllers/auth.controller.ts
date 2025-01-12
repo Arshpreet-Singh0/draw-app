@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-// import {z} from 'zod';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import {JWT_SECRET} from "@repo/backend-common/config";
-import {CreateUserSchema} from '@repo/common/types'
+import {CreateUserSchema, SigninSchema} from '@repo/common/types'
+import { prisma } from '@repo/database-common/prismaClient';
 
 export const signup = async(req:Request, res:Response)=>{
     try {
@@ -15,7 +15,29 @@ export const signup = async(req:Request, res:Response)=>{
             return;
         }
 
+        const user = await prisma.user.findUnique({
+            where : {
+                email : req.body.email,
+            }
+        })
+
+        if(user){
+            res.status(400).json({
+                message : "Username already exists.",
+                suceess : "false",
+            });
+            return;
+        };
         const hashedPassword = await bcrypt.hash(req.body.password, 5);
+
+        await prisma.user.create({
+            data : {
+                email : req.body.email,
+                name : req.body.name,
+                password : hashedPassword,
+            }
+        })
+        
 
         res.status(200).json({
             message : "Account created successfully.",
@@ -27,18 +49,31 @@ export const signup = async(req:Request, res:Response)=>{
         
     }
 }
-export const signin = (req:Request, res:Response)=>{
+export const signin = async(req:Request, res:Response)=>{
     try {
-        const {name, email, password} = req.body;
 
-        if(!email || !password){
-            res.json({
-                message : "all fields required.",
+        const data = SigninSchema.safeParse(req.body);
+
+        if(!data.success){
+            res.status(400).json({message:"Everyfield is required"});
+            return;
+        }
+
+        const user = await prisma.user.findUnique({
+            where : {
+                email : req.body.eamil,
+            }
+        });
+
+        if(!user){
+            res.status(400).json({
+                message : "Invalid username or password.",
+                success : "false",
             });
             return;
         }
 
-        const isPasswordMatched = bcrypt.compare(password, password);
+        const isPasswordMatched = bcrypt.compare(req.body.password, user.password);
 
         if(!isPasswordMatched){
             res.status(403).json({
@@ -47,7 +82,7 @@ export const signin = (req:Request, res:Response)=>{
             });
         }
 
-        const token = jwt.sign({name : name}, JWT_SECRET);
+        const token = jwt.sign({name : user.name}, JWT_SECRET);
 
         res.status(200).json({
             message : "Signin succesfull",

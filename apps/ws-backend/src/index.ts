@@ -1,8 +1,9 @@
 import { WebSocketServer } from "ws";
 import jwt from 'jsonwebtoken';
 import {JWT_SECRET} from "@repo/backend-common/config"
-
+import { prisma } from '@repo/database-common/prismaClient';
 const wss = new WebSocketServer({port : 8080});
+
 
 wss.on("connection" , (ws, request)=>{
     
@@ -15,7 +16,7 @@ wss.on("connection" , (ws, request)=>{
 
     const decode = jwt.verify(token, JWT_SECRET);
 
-    if(!decode){
+    if(typeof decode == "string"){
         ws.close();
     }
 

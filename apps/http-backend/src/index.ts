@@ -15,5 +15,5 @@ app.use('/', authRouter);
 
 
 app.listen(3001, ()=>{
-    console.log("listening to port 3000");  
+    console.log("listening to port 3001");  
 })
