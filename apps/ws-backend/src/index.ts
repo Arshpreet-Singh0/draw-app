@@ -30,7 +30,7 @@ function checkUser(token: string): string | null {
   return null;
 }
 
-wss.on('connection', function connection(ws : WebSocket, request) {
+wss.on('connection', function connection(ws, request) {
   const url = request.url;
   if (!url) {
     return;
@@ -50,7 +50,7 @@ wss.on('connection', function connection(ws : WebSocket, request) {
     ws
   })
 
-  ws.on('message', async function message(data : string) {
+  ws.on('message', async function message(data) {
     const parsedData = JSON.parse(data as unknown as string); // {type: "join-room", roomId: 1}
 
     if (parsedData.type === "join_room") {
