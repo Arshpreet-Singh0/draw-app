@@ -1,5 +1,7 @@
 
 import { Pencil, Share2, Lock, Sparkles, ChevronRight, Github } from 'lucide-react';
+import Link from 'next/link';
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
@@ -17,9 +19,12 @@ export default function Home() {
               <Github className="h-5 w-5" />
               <span>GitHub</span>
             </a>
-            <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-              Open App
-            </button>
+            <Link href={'/signin'} className="border-2 border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:border-gray-300 transition-colors">
+              Sign In
+            </Link >
+            <Link href={'/signup'} className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+              Sign Up
+            </Link >
           </div>
         </nav>
 

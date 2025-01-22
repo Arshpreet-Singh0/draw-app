@@ -32,12 +32,11 @@ app.post('/room', isAuthenticated, async(req, res)=>{
             })
             return;
         }
-        //@ts-ignore
         const userId = req.userId;
     
         const room = await prisma.room.create({
             data : {
-                adminId : userId,
+                adminId : String(userId),
                 slug : req.body.name,
             }
         });
@@ -45,12 +44,61 @@ app.post('/room', isAuthenticated, async(req, res)=>{
         res.status(200).json({
             message : "Room created successfully",
             id : room.id,
+            success : true
         })
         
     } catch (error) {
         console.log(error);
     }
 });
+
+app.get('/room', isAuthenticated, async(req, res)=>{
+    try {
+        const adminId = req.userId;
+
+        const rooms = await prisma.room.findMany({
+            where : {
+                adminId : adminId,
+            }
+        })
+
+
+        res.status(200).json({
+            rooms
+        })
+    } catch (error) {
+        console.log(error);
+        
+    }
+})
+app.get('/room/:name', isAuthenticated, async(req, res)=>{
+    try {
+        const name = req.params.name;
+
+        const room = await prisma.room.findFirst({
+            where : {
+                slug : name
+            }
+        });
+
+        if(!room){
+            res.status(404).json({
+                message : "Room not found.",
+                success : false,
+            });
+            return;
+        }
+
+
+        res.status(200).json({
+            id : room.id,
+            success : true,
+        })
+    } catch (error) {
+        console.log(error);
+        
+    }
+})
 
 app.get("/chats/:roomId", async(req, res)=>{
     try {

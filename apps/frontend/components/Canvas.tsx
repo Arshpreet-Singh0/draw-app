@@ -14,12 +14,11 @@ const Canvas = ({ socket, roomId }: { socket: WebSocket; roomId: number }) => {
     }
   }, [canvasRef]);
   return (
-    <div>
+    <div className="h-[100vh] w-full overflow-hidden">
       <canvas
         ref={canvasRef}
-        width={1000}
-        height={1000}
-        className="bg-black"
+        width={window.innerWidth} height={window.innerHeight}
+        className="bg-black h-full w-full"
       ></canvas>
     </div>
   );

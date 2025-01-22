@@ -72,8 +72,9 @@ export const signin = async(req:Request, res:Response)=>{
             });
             return;
         }
-
-        const isPasswordMatched = bcrypt.compare(parsedData.data.password, user.password);
+        
+        
+        const isPasswordMatched = await bcrypt.compare(parsedData.data.password, user.password);
 
         if(!isPasswordMatched){
             res.status(403).json({
