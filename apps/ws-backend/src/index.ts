@@ -54,6 +54,8 @@ wss.on('connection', function connection(ws, request) {
     const parsedData = JSON.parse(data as unknown as string); // {type: "join-room", roomId: 1}
 
     if (parsedData.type === "join_room") {
+      console.log(parsedData);
+      
       const user = users.find(x => x.ws === ws);
       user?.rooms.push(parsedData.roomId);
     }
@@ -67,6 +69,8 @@ wss.on('connection', function connection(ws, request) {
     }
 
     if (parsedData.type === "chat") {
+      console.log(parsedData);
+      
       const roomId = parsedData.roomId;
       const message = parsedData.message;
 

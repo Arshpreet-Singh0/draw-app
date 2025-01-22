@@ -8,7 +8,7 @@ import cors from 'cors';
 
 app.use(express.json());
 app.use(cors({
-    origin : 'http://localhost:3000',
+    origin : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
 }))
 
 app.post('/room', isAuthenticated, async(req, res)=>{
@@ -80,6 +80,6 @@ app.get("/chats/:roomId", async(req, res)=>{
 app.use('/', authRouter);
 
 
-app.listen(3001, ()=>{
-    console.log("listening to port 3001");  
+app.listen(3003, ()=>{
+    console.log("listening to port 3003");  
 })
