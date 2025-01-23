@@ -115,21 +115,29 @@ wss.on('connection', function connection(ws, request) {
         return; // Handle the case where the record doesn't exist
       }
 
-      let r = await prisma.chat.delete({
-        where : {
-          id : Number(chatId)
-        }
-      });
+      try {
+        await prisma.chat.delete({
+         where : {
+           id : Number(chatId)
+         }
+       });
+       users.forEach(user => {
+         if (user.rooms.includes(roomId)) {
+           user.ws.send(JSON.stringify({
+             type: "delete",
+             roomId,
+             chatId,
+           }))
+         }
+       })
+        
+      } catch (error) {
+        console.log(error);
+        return;
+        
+      }
 
-      users.forEach(user => {
-        if (user.rooms.includes(roomId)) {
-          user.ws.send(JSON.stringify({
-            type: "delete",
-            roomId,
-            chatId,
-          }))
-        }
-      })
+
     }
 
   });
