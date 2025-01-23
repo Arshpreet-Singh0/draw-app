@@ -11,6 +11,7 @@ interface User {
 }
 const users: User[] = [];
 
+
 function checkUser(token: string): string | null {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
@@ -44,20 +45,26 @@ wss.on('connection', function connection(ws, request) {
     return null;
   }
 
-  users.push({
-    userId,
-    rooms: [],
-    ws
-  })
+  if (!users.some(u => u.userId === userId && u.ws === ws)) {
+    users.push({
+      userId,
+      rooms: [],
+      ws
+    });
+  }
 
   ws.on('message', async function message(data) {
+    
     const parsedData = JSON.parse(data as unknown as string); // {type: "join-room", roomId: 1}
 
     if (parsedData.type === "join_room") {
       console.log(parsedData);
       
       const user = users.find(x => x.ws === ws);
-      user?.rooms.push(parsedData.roomId);
+      if (!user?.rooms.includes(parsedData.roomId)) {
+        user?.rooms.push(parsedData.roomId);
+      }
+      
     }
 
     if (parsedData.type === "leave_room") {
@@ -74,7 +81,7 @@ wss.on('connection', function connection(ws, request) {
       const roomId = parsedData.roomId;
       const message = parsedData.message;
 
-      await prisma.chat.create({
+      const chat = await prisma.chat.create({
         data: {
           roomId : Number(roomId),
           message,
@@ -87,7 +94,39 @@ wss.on('connection', function connection(ws, request) {
           user.ws.send(JSON.stringify({
             type: "chat",
             message: message,
-            roomId
+            roomId,
+            id : chat.id
+          }))
+        }
+      })
+    }
+
+    if(parsedData.type==="delete"){
+      console.log(parsedData);
+      
+      const chatId = parsedData.chatId;
+      const roomId = parsedData.roomId;
+      const existingChat = await prisma.chat.findFirst({
+        where: { id: Number(chatId) },
+      });
+      
+      if (!existingChat) {
+        console.log(`Chat with ID ${chatId} does not exist.`);
+        return; // Handle the case where the record doesn't exist
+      }
+
+      let r = await prisma.chat.delete({
+        where : {
+          id : Number(chatId)
+        }
+      });
+
+      users.forEach(user => {
+        if (user.rooms.includes(roomId)) {
+          user.ws.send(JSON.stringify({
+            type: "delete",
+            roomId,
+            chatId,
           }))
         }
       })
