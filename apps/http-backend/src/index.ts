@@ -71,6 +71,33 @@ app.get('/room', isAuthenticated, async(req, res)=>{
         
     }
 })
+
+app.get('/checkroom/:id', async(req, res)=>{
+    try {
+        const id = req.params.id;
+
+        const room = await prisma.room.findUnique({
+            where : {
+                id : Number(id),
+            }
+        });
+
+        if(!room){
+            res.status(200).json({
+                success : false,
+            })
+            return;
+        };
+
+        res.status(200).json({
+            success : true,
+        })
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
+})
 app.get('/room/:name', isAuthenticated, async(req, res)=>{
     try {
         const name = req.params.name;

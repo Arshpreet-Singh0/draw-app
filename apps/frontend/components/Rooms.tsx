@@ -19,6 +19,11 @@ const Rooms = () => {
 
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem("token");
+
+    if(!tokenFromStorage){
+      toast.error("Please login to continue");
+      router.push("/signin");
+    }
     setToken(tokenFromStorage);
 
     if (tokenFromStorage) {
@@ -30,7 +35,6 @@ const Rooms = () => {
             },
           });
 
-          console.log(res);
           setRooms(res?.data?.rooms);
         } catch (error) {
           console.error("Error fetching rooms:", error);
@@ -111,7 +115,7 @@ const Rooms = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Pencil className="h-8 w-8 text-blue-600" />
+              <Pencil className="h-8 w-8 text-purple-600" />
               <h1 className="text-2xl font-bold text-gray-900">Excalidraw Clone</h1>
             </div>
             <div className="flex space-x-4">
@@ -124,7 +128,7 @@ const Rooms = () => {
               </button>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Create Room

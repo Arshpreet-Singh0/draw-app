@@ -1,8 +1,12 @@
+"use client";
 
 import { Pencil, Share2, Lock, Sparkles, ChevronRight, Github } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const token = localStorage.getItem("token");
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -15,16 +19,28 @@ export default function Home() {
           <div className="flex items-center space-x-6">
             <a href="#" className="text-gray-600 hover:text-gray-900">About</a>
             <a href="#" className="text-gray-600 hover:text-gray-900">Blog</a>
-            <a href="https://github.com" className="text-gray-600 hover:text-gray-900 flex items-center space-x-1">
+            <a href="https://github.com/Arshpreet-Singh0/draw-app" className="text-gray-600 hover:text-gray-900 flex items-center space-x-1">
               <Github className="h-5 w-5" />
               <span>GitHub</span>
             </a>
-            <Link href={'/signin'} className="border-2 border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:border-gray-300 transition-colors">
+            {
+              token ? (
+                <>
+                <Link href={'/rooms'} className="border-2 border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:border-gray-300 transition-colors">
+              See Rooms
+            </Link >
+                </>
+              ) : (
+                <>
+                <Link href={'/signin'} className="border-2 border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:border-gray-300 transition-colors">
               Sign In
             </Link >
             <Link href={'/signup'} className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
               Sign Up
             </Link >
+                </>
+              )
+            }
           </div>
         </nav>
 
@@ -36,7 +52,7 @@ export default function Home() {
             Create beautiful hand-drawn diagrams, flowcharts, and illustrations with our intuitive whiteboard tool. Perfect for teams, designers, and educators.
           </p>
           <div className="flex justify-center space-x-4">
-            <button className="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2">
+            <button className="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2" onClick={()=>router.push('/rooms')}>
               <span>Start Drawing</span>
               <ChevronRight className="h-5 w-5" />
             </button>

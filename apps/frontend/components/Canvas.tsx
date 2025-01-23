@@ -114,8 +114,8 @@ const Sidebar = ({strokColor, setStrokColor, strokWidth, setStrokWidth} : {strok
       <h1 className="text-white opacity-85">Strok Size</h1>
       <div className="flex flex-wrap gap-2 mt-2">
           {
-            widths.map((width)=>(
-              <span className={`text-white bg-[#2e2e2e] rounded px-4 py-1 ${strokWidth==width ? 'border-2' : ''} border-white`} onClick={()=>setStrokWidth(width)}>{width}</span>
+            widths.map((width, idx)=>(
+              <span className={`text-white bg-[#2e2e2e] rounded px-4 py-1 ${strokWidth==width ? 'border-2' : ''} border-white`} key={idx} onClick={()=>setStrokWidth(width)}>{width}</span>
             ))
           }
 
