@@ -58,8 +58,6 @@ wss.on('connection', function connection(ws, request) {
     const parsedData = JSON.parse(data as unknown as string); // {type: "join-room", roomId: 1}
 
     if (parsedData.type === "join_room") {
-      console.log(parsedData);
-      
       const user = users.find(x => x.ws === ws);
       if (!user?.rooms.includes(parsedData.roomId)) {
         user?.rooms.push(parsedData.roomId);
@@ -102,27 +100,29 @@ wss.on('connection', function connection(ws, request) {
     }
 
     if(parsedData.type==="delete"){
-      console.log(parsedData);
-      
       const chatId = parsedData.chatId;
-      const roomId = parsedData.roomId;
-      const existingChat = await prisma.chat.findFirst({
-        where: { id: Number(chatId) },
-      });
+      const roomId : string = parsedData.roomId;
       
-      if (!existingChat) {
-        console.log(`Chat with ID ${chatId} does not exist.`);
-        return; // Handle the case where the record doesn't exist
-      }
-
       try {
+        const existingChat = await prisma.chat.findFirst({
+          where: { id: Number(chatId) },
+        });
+        
+        if (!existingChat) {
+          console.log(`Chat with ID ${chatId} does not exist.`);
+          return; // Handle the case where the record doesn't exist
+        }
         await prisma.chat.delete({
          where : {
            id : Number(chatId)
          }
        });
+       
        users.forEach(user => {
+         
          if (user.rooms.includes(roomId)) {
+          console.log("room" , user.userId);
+          
            user.ws.send(JSON.stringify({
              type: "delete",
              roomId,

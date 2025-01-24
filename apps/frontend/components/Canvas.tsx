@@ -1,6 +1,7 @@
 "use client";
 
 import { initDraw } from "@/draw";
+import { Draw } from "@/draw/draw";
 import { Circle, Eraser, MousePointer2, Pencil, Plus, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -8,6 +9,7 @@ export type Tool = "rectangle" | "circle" | "pencil" | "eraser" | "";
 
 const Canvas = ({ socket, roomId }: { socket: WebSocket; roomId: number }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [draw, setDraw] = useState<Draw>();
   const [selectedTool, setSelectedTool] = useState<Tool>("");
   const [strokColor, setStrokColor] = useState("rgba(255, 255, 255)");
   const [strokWidth, setStrokWidth] = useState(1);
@@ -17,18 +19,26 @@ const Canvas = ({ socket, roomId }: { socket: WebSocket; roomId: number }) => {
     if (canvasRef.current) {
       const canvas = canvasRef.current;
 
-      initDraw(canvas, roomId, socket);
+      const d = new Draw(canvas, roomId, socket);
+      setDraw(d);
+
+      return ()=>{
+        d.destroy();
+      }
+
     }
   }, [canvasRef]);
 
   useEffect(()=>{
-    //@ts-ignore
-    window.selectedTool = selectedTool;
-    //@ts-ignore
-    window.strokColor = strokColor;
-    //@ts-ignore
-    window.strokWidth = strokWidth;
-  },[selectedTool, strokColor, strokWidth]);
+    draw?.setStrokColor(strokColor);
+
+    draw?.setStrokWidth(strokWidth);
+
+    draw?.setTool(selectedTool);
+    ;
+  },[selectedTool, strokColor, strokWidth, draw]);
+
+  
 
   return (
     <div className="h-[100vh] w-full overflow-hidden">
