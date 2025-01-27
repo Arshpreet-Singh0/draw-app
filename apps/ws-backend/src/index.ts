@@ -139,6 +139,36 @@ wss.on('connection', function connection(ws, request) {
 
 
     }
+    if(parsedData.type==="clearscreen"){
+      const roomId : string = parsedData.roomId;
+      
+      try {
+        await prisma.chat.deleteMany({
+          where : {
+            roomId : Number(roomId),
+          }
+        });
+       
+       users.forEach(user => {
+         
+         if (user.rooms.includes(roomId)) {
+          console.log("room" , user.userId);
+          
+           user.ws.send(JSON.stringify({
+             type: "clearscreen",
+             roomId,
+           }))
+         }
+       })
+        
+      } catch (error) {
+        console.log(error);
+        return;
+        
+      }
+
+
+    }
 
   });
 

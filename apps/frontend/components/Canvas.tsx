@@ -50,7 +50,7 @@ const Canvas = ({ socket, roomId }: { socket: WebSocket; roomId: number }) => {
    
       ></canvas>
 
-      <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool}/>
+      <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool} socket={socket} roomId={roomId}/>
       <Sidebar strokColor={strokColor} setStrokColor={setStrokColor} strokWidth={strokWidth} setStrokWidth={setStrokWidth} />
     </div>
   );
@@ -58,10 +58,20 @@ const Canvas = ({ socket, roomId }: { socket: WebSocket; roomId: number }) => {
 
 export default Canvas;
 
-const Topbar = ({selectedTool, setSelectedTool} : {
+const Topbar = ({selectedTool, setSelectedTool, socket, roomId} : {
   selectedTool : Tool,
-  setSelectedTool : (t:Tool) => void
+  setSelectedTool : (t:Tool) => void,
+  socket : WebSocket,
+  roomId : number
 })=>{
+  const handleClearScreen = ()=>{
+    socket.send(
+      JSON.stringify({
+        type: "clearscreen",
+        roomId,
+      })
+    );
+  }
   return (
     <div className="p-5 fixed top-0 w-full">
 
@@ -84,6 +94,10 @@ const Topbar = ({selectedTool, setSelectedTool} : {
         </div>
         <div className=" p-3 rounded-lg" onClick={()=>setSelectedTool("eraser")}>
           <Eraser className={`${selectedTool=="eraser" ? 'text-purple-600' : 'text-white '}`}/>
+
+        </div>
+        <div className="flex justify-center items-center">
+          <button className="bg-violet-600 p-2 rounded-lg hover:bg-violet-700 font-semibold text-white" onClick={handleClearScreen}>Clear Screen</button>
 
         </div>
 

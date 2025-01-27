@@ -58,6 +58,8 @@ export class Draw{
         this.initMouseHandlers();
     }
 
+    
+
     setTool(tool: "circle" | "pencil" | "rectangle" | "eraser" | "") {
         this.selectedTool = tool;
     }
@@ -100,6 +102,10 @@ export class Draw{
                 this.clearCanvas();
               }
               
+            }
+            if(message.type=="clearscreen"){
+              this.existingShapes = [];
+              this.clearCanvas();
             }
           };
         
@@ -273,7 +279,7 @@ export class Draw{
       } else if (shape.type === "pencil") {
         return shape?.points?.some(
           (point : any) =>
-            Math.abs(point.x - mouseX) < 8 && Math.abs(point.y - mouseY) < 8
+            Math.abs(point.x - mouseX) < 10 && Math.abs(point.y - mouseY) < 10
         );
       }
       return false;
