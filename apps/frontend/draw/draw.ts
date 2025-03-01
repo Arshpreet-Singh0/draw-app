@@ -194,6 +194,7 @@ export class Draw{
         
             if (shape) {
               // Send the shape via WebSocket
+              this.existingShapes.push(shape);
               this.socket.send(
                 JSON.stringify({
                   type: "chat",
