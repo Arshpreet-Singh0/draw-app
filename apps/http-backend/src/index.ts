@@ -1,5 +1,7 @@
 import express from "express";
 const app = express();
+import dotenv from "dotenv";
+dotenv.config();
 import authRouter from './routes/auth.routes';
 import { isAuthenticated } from "./middlewares/isAuthenticated";
 import { prisma } from "@repo/database-common/prismaClient";
@@ -7,9 +9,13 @@ import {CreateRoomSchema} from '@repo/common/types';
 import cors from 'cors';
 
 app.use(express.json());
+console.log(process.env.ALLOWED_CLIENTS?.split(",").map((origin)=> origin.trim()));
+
 app.use(cors({
-    origin : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
-}))
+    origin : process.env.ALLOWED_CLIENTS?.split(",").map((origin)=> origin.trim()) || ["http://localhost:3000"],
+    methods : ["GET", "POST", "PUT", "DELETE"],
+    credentials : true
+}));
 
 app.post('/room', isAuthenticated, async(req, res)=>{
     
