@@ -1,8 +1,8 @@
 "use client";
 
-import { initDraw } from "@/draw";
+// import { initDraw } from "@/draw";
 import { Draw } from "@/draw/draw";
-import { Circle, Eraser, MousePointer2, Pencil, Plus, Square } from "lucide-react";
+import { Circle, Eraser, MousePointer2, Pencil, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export type Tool = "rectangle" | "circle" | "pencil" | "eraser" | "";
@@ -27,7 +27,7 @@ const Canvas = ({ socket, roomId }: { socket: WebSocket; roomId: number }) => {
       }
 
     }
-  }, [canvasRef]);
+  }, [canvasRef, roomId, socket]);
 
   useEffect(()=>{
     draw?.setStrokColor(strokColor);

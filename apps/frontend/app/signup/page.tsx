@@ -7,7 +7,7 @@ import { HTTP_BACKEND } from "@/Config";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-export default function page(){
+export default function Page(){
     const [input, setInput] = useState({
                 email: '',
                 password: '',

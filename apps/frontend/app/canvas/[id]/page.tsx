@@ -2,7 +2,6 @@ import RoomCanvas from "@/components/RoomCanvas";
 import { HTTP_BACKEND } from "@/Config";
 import axios from "axios";
 import { redirect } from "next/navigation";
-import toast from "react-hot-toast";
 
 async function checkRoom(id : number){
     const res = await axios.get(`${HTTP_BACKEND}/checkroom/${id}`);

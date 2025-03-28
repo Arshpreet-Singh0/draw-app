@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function page(){
+export default function Page(){
     const [input, setInput] = useState({
             name: '',
             email: '',

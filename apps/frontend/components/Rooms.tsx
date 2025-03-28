@@ -3,7 +3,7 @@
 import { HTTP_BACKEND } from "@/Config";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Plus, Users, LogIn, Pencil } from 'lucide-react';
+import { Plus, LogIn, Pencil } from 'lucide-react';
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -16,6 +16,8 @@ const Rooms = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
+  console.log(HTTP_BACKEND);
+  
 
   useEffect(() => {
     const tokenFromStorage = localStorage.getItem("token");
@@ -45,7 +47,7 @@ const Rooms = () => {
     } else {
       console.warn("No token found in localStorage");
     }
-  }, []);
+  }, [router]);
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);

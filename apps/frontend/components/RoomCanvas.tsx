@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import Canvas from "./Canvas";
 import { WS_BACKEND } from "@/Config";
 import toast from "react-hot-toast";
@@ -30,7 +30,7 @@ export default function RoomCanvas({roomId} : {
             ws.send(data);
         }
         
-    }, [])
+    }, [router, roomId])
 
     if(!socket){
         return <div>

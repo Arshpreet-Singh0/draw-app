@@ -1,12 +1,20 @@
 "use client";
 
 import { Pencil, Share2, Lock, Sparkles, ChevronRight, Github } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const token = localStorage.getItem("token");
+  const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -107,10 +115,12 @@ export default function Home() {
               <p className="text-gray-600 mb-8">
                 Watch how easy it is to create beautiful diagrams and collaborate with your team in real-time.
               </p>
-              <img 
+              <Image
                 src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?auto=format&fit=crop&w=600&q=80" 
                 alt="Collaborative drawing demonstration"
                 className="rounded-lg shadow-xl"
+                width={1000}
+                height={100}
               />
             </div>
             <div className="md:w-1/2 md:pl-12">

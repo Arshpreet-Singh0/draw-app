@@ -1,8 +1,7 @@
 "use client";
-import { Button } from "@repo/ui/button";
-import { Github, Mail, Lock, User, ExternalLink } from "lucide-react";
+import { Mail, Lock, User, ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react";
+import { ChangeEvent } from "react";
 
 interface inputType {
   name?: string;
@@ -115,7 +114,7 @@ export default function AuthPage({
           {isSignIn ? (
             <>
               <p className="mt-6 text-center text-gray-400">
-                Don't have an account?{" "}
+                {"Don't have an account?"}
                 <Link
                   href="/signup"
                   className="text-blue-500 hover:text-blue-400"
@@ -126,7 +125,7 @@ export default function AuthPage({
             </>
           ) : (
             <p className="mt-6 text-center text-gray-400">
-              Already have an account?{" "}
+              Already have an account?
               <Link
                 href="/signin"
                 className="text-blue-500 hover:text-blue-400"
